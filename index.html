@@ -1,0 +1,460 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A.H Gaming Store | AAA Games</title>
+<style>
+:root{--bg:#080b12;--panel:#101725;--blue:#168bff;--cyan:#36d8ff;--text:#f4f7ff;--muted:#98a6bb;--line:#24334a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+button,input{font:inherit}
+button{cursor:pointer}
+header{position:sticky;top:0;z-index:20;background:#080b12f2;backdrop-filter:blur(15px);border-bottom:1px solid var(--line)}
+.nav{max-width:1500px;margin:auto;padding:17px 4%;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.logo{font-size:22px;font-weight:900;letter-spacing:-1px}
+.logo span{color:var(--cyan)}
+.actions{display:flex;gap:9px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:#121c2b;color:white;padding:11px 15px;border-radius:9px;font-weight:700}
+.btn:hover{border-color:var(--cyan);transform:translateY(-1px)}
+.primary{background:linear-gradient(110deg,#0878ff,#20b9ff);border:0;color:white}
+main{max-width:1500px;margin:auto;padding:0 4% 55px}
+.hero{padding:55px 0 32px;display:grid;grid-template-columns:1.4fr .8fr;gap:25px;align-items:center}
+.eyebrow{color:var(--cyan);font-size:12px;letter-spacing:3px;font-weight:900}
+h1{font-size:clamp(35px,5.5vw,68px);line-height:1.02;margin:15px 0}
+h1 span{color:var(--cyan)}
+.hero p{color:var(--muted);line-height:1.8;max-width:650px}
+.hero-card{min-height:235px;border:1px solid #24466b;border-radius:20px;padding:28px;background:radial-gradient(ellipse at 80% 20%,#15579b 0,transparent 50%),linear-gradient(135deg,#111d32,#080b12);display:flex;flex-direction:column;justify-content:end}
+.hero-card strong{font-size:30px}
+.hero-card p{margin-bottom:0}
+.searchbar{display:flex;gap:10px;margin:10px 0 25px}
+.searchbar input{min-width:0;flex:1;background:#101725;border:1px solid var(--line);border-radius:10px;padding:15px;color:white;outline:none}
+.searchbar input:focus{border-color:var(--cyan)}
+.sectionhead{display:flex;justify-content:space-between;align-items:center;gap:15px;margin:22px 0}
+.sectionhead h2{margin:0;font-size:25px}
+.sectionhead p{color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:17px}
+.game{min-width:0;background:var(--panel);border:1px solid #1c2a3e;border-radius:13px;overflow:hidden;transition:.2s}
+.game:hover{transform:translateY(-4px);border-color:#247bd0;box-shadow:0 10px 28px #0005}
+.art{height:150px;background:linear-gradient(135deg,#12223b,#183d5d,#0c1019);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.art img{width:100%;height:100%;object-fit:cover;display:block}
+.art-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:18px;font-weight:900;font-size:19px;background:radial-gradient(ellipse at top right,#164a76,#101725 65%)}
+.gamebody{padding:13px}
+.game h3{font-size:15px;line-height:1.4;min-height:40px;margin:0 0 8px}
+.desc{font-size:12px;color:var(--muted);line-height:1.55;min-height:56px;margin:0 0 13px}
+.price{font-weight:900;font-size:17px;margin:8px 0 12px}
+.price small{display:block;color:var(--muted);font-weight:400;font-size:10px;margin-top:4px}
+.gamebuttons{display:flex;gap:7px}
+.gamebuttons button{flex:1;padding:9px 5px;font-size:11px;border-radius:7px}
+footer{border-top:1px solid var(--line);color:var(--muted);padding:25px 4%;text-align:center;font-size:12px;line-height:1.8}
+.modal{display:none;position:fixed;inset:0;background:#000b;z-index:100;align-items:center;justify-content:center;padding:15px}
+.modal.show{display:flex}
+.dialog{width:min(500px,100%);max-height:90vh;overflow:auto;background:#101725;border:1px solid #2b405e;border-radius:17px;padding:23px}
+.dialog h2{margin-top:0}
+.dialog input{display:block;width:100%;margin:10px 0;background:#080e18;color:white;border:1px solid var(--line);padding:13px;border-radius:8px}
+.dialog-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
+.dialog-actions button{flex:1}
+.cartrow{padding:12px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;font-size:13px}
+.muted{color:var(--muted);font-size:12px;line-height:1.7}
+#bill{background:white;color:#111;padding:20px;border-radius:8px;font-size:13px}
+#bill h2{color:#111}
+#bill table{width:100%;border-collapse:collapse}
+#bill td,#bill th{border-bottom:1px solid #ddd;padding:8px 3px;text-align:left}
+@media(max-width:1100px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:800px){.hero{grid-template-columns:1fr;padding-top:35px}.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.art{height:125px}}
+@media(max-width:550px){.nav{align-items:flex-start}.logo{font-size:18px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.art{height:115px}.gamebody{padding:10px}.game h3{font-size:13px}.desc{font-size:11px}.hero-card{min-height:175px}.actions .btn{padding:9px;font-size:12px}.searchbar{flex-direction:column}}
+</style>
+</head>
+<body>
+<header>
+  <div class="nav">
+    <div class="logo">A.H <span>GAMING STORE</span></div>
+    <div class="actions">
+      <button class="btn" onclick="openAccount()" id="accountBtn">Sign In</button>
+      <button class="btn primary" onclick="openCart()">🛒 Cart <span id="cartCount">0</span></button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div>
+      <div class="eyebrow">WELCOME TO THE NEXT LEVEL</div>
+      <h1>THE ULTIMATE<br><span>AAA GAME</span> COLLECTION</h1>
+      <p>Explore legendary open worlds, cinematic adventures, racing experiences, survival games and blockbuster action. Find your next favourite game in one place.</p>
+      <button class="btn primary" onclick="document.getElementById('search').focus()">Explore All Games ↓</button>
+    </div>
+    <div class="hero-card">
+      <div class="eyebrow">YOUR GAMING DESTINATION</div>
+      <strong>Play Beyond Limits.</strong>
+      <p>Discover the games everyone is talking about.</p>
+    </div>
+  </section>
+
+  <div class="searchbar">
+    <input id="search" type="search" placeholder="Search GTA V, Spider-Man, Forza, Resident Evil..." oninput="renderGames()">
+    <button class="btn primary" onclick="renderGames()">Search Games</button>
+    <button class="btn" onclick="clearSearch()">Reset</button>
+  </div>
+
+  <div class="sectionhead">
+    <div>
+      <h2>Popular AAA Games</h2>
+      <p>One collection. No categories. Just games.</p>
+    </div>
+    <div id="resultCount" class="muted"></div>
+  </div>
+
+  <div class="grid" id="gameGrid"></div>
+</main>
+
+<footer>
+  <strong>A.H GAMING STORE</strong><br>
+  Independent game discovery and order enquiry website. Not affiliated with game publishers.<br>
+  Game names and artwork belong to their respective owners. Availability and authorized purchase options must be confirmed before ordering.<br>
+  Prices displayed are demo service fees, not official game prices. This website does not provide pirated game copies.
+</footer>
+
+<div class="modal" id="accountModal" onclick="outsideClose(event,'accountModal')">
+  <div class="dialog">
+    <h2>Customer Account</h2>
+    <p class="muted">Sign in to attach your customer ID to your order bill. This demo stores account details only in this browser and is not secure production authentication.</p>
+    <input id="customerName" placeholder="Your full name">
+    <input id="customerEmail" type="email" placeholder="Email address">
+    <div class="dialog-actions">
+      <button class="btn primary" onclick="signIn()">Sign In / Create Demo ID</button>
+      <button class="btn" onclick="closeModal('accountModal')">Close</button>
+    </div>
+    <p id="accountMessage" class="muted"></p>
+  </div>
+</div>
+
+<div class="modal" id="cartModal" onclick="outsideClose(event,'cartModal')">
+  <div class="dialog">
+    <h2>Your Shopping Cart</h2>
+    <div id="cartItems"></div>
+    <div class="cartrow"><strong>Demo service fee total</strong><strong id="cartTotal">Rs. 0</strong></div>
+    <p class="muted">The demo fee is not the official price of any game. Confirm the actual product, platform, availability and authorized purchase method before paying.</p>
+    <div class="dialog-actions">
+      <button class="btn primary" onclick="checkout()">Create Bill</button>
+      <button class="btn" onclick="closeModal('cartModal')">Continue Browsing</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="billModal" onclick="outsideClose(event,'billModal')">
+  <div class="dialog">
+    <h2>Your Order Bill</h2>
+    <div id="bill"></div>
+    <div class="dialog-actions">
+      <button class="btn primary" onclick="sendWhatsApp()">WhatsApp Enquiry</button>
+      <button class="btn" onclick="closeModal('billModal')">Close</button>
+    </div>
+    <p class="muted">WhatsApp opens a message for order enquiry. No payment is processed by this website.</p>
+  </div>
+</div>
+
+<script>
+const DEMO_FEE = 100;
+const WHATSAPP_NUMBER = "923138230176";
+
+const games = [
+["Grand Theft Auto V Enhanced",271590,"Explore Los Santos in a sprawling open-world crime adventure."],
+["Red Dead Redemption 2",1174180,"An epic Western story across a detailed and living frontier."],
+["Cyberpunk 2077",1091500,"Explore Night City in a futuristic open-world RPG."],
+["Hogwarts Legacy",990080,"Experience a magical adventure in the wizarding world."],
+["Elden Ring",1245620,"Explore a vast fantasy world filled with challenging battles."],
+["Black Myth: Wukong",2358720,"Take on mythological enemies in an action-packed journey."],
+["The Witcher 3: Wild Hunt",292030,"Follow Geralt through a richly detailed fantasy world."],
+["Baldur's Gate 3",1086940,"Shape an epic fantasy adventure through your choices."],
+["Marvel's Spider-Man Remastered",1817070,"Swing through New York and fight iconic villains."],
+["Marvel's Spider-Man: Miles Morales",1817190,"Experience a superhero adventure starring Miles Morales."],
+["Marvel's Spider-Man 2",2651280,"Explore New York in a cinematic Spider-Man adventure."],
+["God of War",1593500,"Join Kratos and Atreus on a mythological journey."],
+["God of War Ragnarök",2322010,"Continue Kratos and Atreus's journey through the Norse realms."],
+["Horizon Zero Dawn Complete Edition",1151640,"Hunt machines across a beautiful post-apocalyptic world."],
+["Horizon Forbidden West Complete Edition",2420110,"Explore dangerous lands and uncover ancient mysteries."],
+["The Last of Us Part I",1888930,"A cinematic survival story in a changed world."],
+["UNCHARTED: Legacy of Thieves Collection",1659420,"Join Nathan Drake and Chloe Frazer on treasure-hunting adventures."],
+["Resident Evil 4",2050650,"Survive a terrifying mission in a remote European village."],
+["Resident Evil Village",1196590,"Explore a mysterious village filled with dangerous creatures."],
+["Resident Evil 2",883710,"Escape a zombie outbreak in Raccoon City."],
+["Resident Evil 3",952060,"Escape a city overrun by infected creatures."],
+["Resident Evil 7 Biohazard",418370,"Experience first-person survival horror."],
+["Silent Hill 2",2124490,"Investigate a haunting town in a psychological horror story."],
+["Dead Space",1693980,"Survive a terrifying crisis aboard a stranded spaceship."],
+["The Callisto Protocol",1544020,"Fight for survival in a dark science-fiction horror setting."],
+["Dying Light 2 Stay Human",534380,"Parkour across a dangerous city in a zombie apocalypse."],
+["S.T.A.L.K.E.R. 2: Heart of Chornobyl",1643320,"Explore a dangerous exclusion zone full of mysteries."],
+["Alan Wake Remastered",1087100,"Uncover a supernatural mystery through a thriller narrative."],
+["Forza Horizon 5",1551360,"Race across a vibrant open-world version of Mexico."],
+["Forza Motorsport",2440510,"Compete on detailed circuits in a modern racing simulator."],
+["Need for Speed Unbound",1846380,"Build your reputation in stylish street racing."],
+["Need for Speed Heat",1222680,"Race by day and challenge the streets by night."],
+["The Crew 2",646910,"Drive, fly and race across a huge recreation of the USA."],
+["The Crew Motorfest",2698940,"Compete in a festival of cars and motorsport."],
+["Assetto Corsa Competizione",805550,"Experience detailed GT racing simulation."],
+["F1 24",2488620,"Compete in Formula racing with modern teams and circuits."],
+["EA SPORTS WRC",1849250,"Race on demanding rally stages around the world."],
+["SnowRunner",1465360,"Drive powerful vehicles through difficult off-road terrain."],
+["Grand Theft Auto IV",12210,"Experience an urban crime story in Liberty City."],
+["Batman: Arkham Knight",208650,"Protect Gotham in a cinematic superhero action game."],
+["Middle-earth: Shadow of War",356190,"Battle enemies in a fantasy world inspired by Middle-earth."],
+["Marvel's Guardians of the Galaxy",1088850,"Join the Guardians on a humorous space adventure."],
+["Mortal Kombat 1",1971870,"Enter a brutal fighting tournament in a rebooted universe."],
+["TEKKEN 8",1778820,"Compete in a next-generation fighting game."],
+["Street Fighter 6",1364780,"Master iconic fighters and new combat mechanics."],
+["Death Stranding Director's Cut",1850570,"Reconnect isolated communities across a mysterious landscape."],
+["Detroit: Become Human",1222140,"Shape an interactive story through important choices."],
+["Sekiro: Shadows Die Twice",814380,"Master precise sword combat in a dark fantasy world."],
+["Dark Souls III",374320,"Face challenging enemies in a dark fantasy adventure."],
+["Lies of P",1627720,"Fight mechanical enemies in a dark reimagining of Pinocchio."],
+["Monster Hunter: World",582010,"Track enormous monsters and craft powerful equipment."],
+["Monster Hunter Wilds",2246340,"Hunt formidable creatures across changing environments."],
+["Final Fantasy VII Remake Intergrade",1462040,"Revisit Midgar in a cinematic RPG adventure."],
+["Final Fantasy XVI",2515020,"Experience a dramatic fantasy story with spectacular battles."],
+["Dragon's Dogma 2",2054970,"Create a hero and explore a fantasy world."],
+["Kingdom Come: Deliverance II",1771300,"Experience a grounded medieval role-playing adventure."],
+["Assassin's Creed Valhalla",2208920,"Explore the Viking age in an expansive historical adventure."],
+["Assassin's Creed Odyssey",812140,"Explore ancient Greece in a large-scale RPG."],
+["Assassin's Creed Origins",582160,"Discover ancient Egypt in an open-world adventure."],
+["Far Cry 5",552520,"Resist a dangerous cult in rural Montana."],
+["Far Cry 6",2369390,"Fight a revolution on the fictional island of Yara."],
+["Watch Dogs 2",447040,"Use hacking skills to challenge a powerful system."],
+["Ghost Recon Breakpoint",2231380,"Complete tactical missions in a hostile open world."],
+["Tom Clancy's The Division 2",2221490,"Fight to restore order in a crisis-stricken Washington."],
+["Tom Clancy's Rainbow Six Siege",359550,"Compete in tactical, team-based shooter matches."],
+["Call of Duty: Modern Warfare III",2519060,"Fight through cinematic military missions and multiplayer."],
+["Call of Duty: Black Ops 6",2933620,"Experience espionage, action and competitive multiplayer."],
+["Call of Duty: Modern Warfare II",1962660,"Take on modern military operations and multiplayer battles."],
+["Battlefield 2042",1517290,"Fight large-scale battles across futuristic environments."],
+["Battlefield V",1238810,"Experience World War II battles and multiplayer combat."],
+["DOOM Eternal",782330,"Battle demonic forces in fast-paced first-person combat."],
+["DOOM (2016)",379720,"Fight demons in a high-speed science-fiction shooter."],
+["Helldivers 2",553850,"Team up for chaotic cooperative sci-fi battles."],
+["Warhammer 40,000: Space Marine 2",2183900,"Battle overwhelming alien forces in cinematic action."],
+["Ready or Not",1144200,"Coordinate tactical operations in a realistic team shooter."],
+["Metro Exodus",412020,"Survive a dangerous journey through a post-apocalyptic world."],
+["Far Cry 4",298110,"Explore the Himalayan region of Kyrat."],
+["Grand Theft Auto: San Andreas",12120,"Experience a classic open-world crime adventure."],
+["Forza Horizon 4",1293830,"Race through a changing open-world Britain."],
+["EA SPORTS FC 25",2669320,"Build a team and compete in football matches."],
+["eFootball",1665460,"Play digital football matches with clubs and national teams."],
+["NBA 2K25",2878980,"Experience basketball action and team management modes."],
+["WWE 2K24",2315690,"Enter the ring with a roster of wrestling superstars."],
+["PGA TOUR 2K25",2140890,"Play golf courses and compete in golf tournaments."],
+["Sid Meier's Civilization VI",289070,"Build a civilization and lead it through the ages."],
+["Sid Meier's Civilization VII",1295660,"Develop a civilization through changing historical eras."],
+["Age of Empires IV",1466860,"Build an empire and command historical armies."],
+["Total War: WARHAMMER III",1142710,"Lead enormous fantasy armies in strategic battles."],
+["Company of Heroes 3",1677280,"Command military forces in real-time strategy battles."],
+["Cities: Skylines",255710,"Design and manage your own growing city."],
+["Cities: Skylines II",949230,"Build a detailed modern city and manage its systems."],
+["Planet Zoo",703080,"Build and manage a wildlife park."],
+["Jurassic World Evolution 2",1244460,"Build a dinosaur park and manage prehistoric creatures."],
+["Microsoft Flight Simulator",1250410,"Fly aircraft across a detailed recreation of Earth."],
+["Farming Simulator 25",2300320,"Manage modern farming equipment, crops and livestock."],
+["ARK: Survival Evolved",346110,"Survive on an island filled with prehistoric creatures."],
+["Rust",252490,"Gather resources, build shelters and survive with other players."],
+["Valheim",892970,"Explore a Norse-inspired survival world."],
+["The Elder Scrolls V: Skyrim Special Edition",489830,"Explore a fantasy land filled with quests and dragons."],
+["Fallout 4",377160,"Survive and explore a post-apocalyptic wasteland."],
+["Borderlands 3",397540,"Explore chaotic worlds with loot, humour and gunfights."],
+["DOOM: The Dark Ages",3017860,"Enter a dark fantasy-inspired DOOM action adventure."]
+];
+
+let cart = [];
+let customer = JSON.parse(localStorage.getItem("ahgs_customer") || "null");
+let currentOrder = null;
+
+function escapeHTML(value){
+  return String(value).replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+}
+
+function artworkHTML(game){
+  const [name,id] = game;
+  const fallback = `<div class="art-fallback">${escapeHTML(name)}</div>`;
+  if(!id) return fallback;
+  const safeName = escapeHTML(name);
+  return `<div class="art">
+    ${fallback}
+    <img loading="lazy" alt="${safeName} artwork"
+      src="https://cdn.cloudflare.steamstatic.com/steam/apps/${id}/header.jpg"
+      onload="this.previousElementSibling.style.display='none'"
+      onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${id}/header.jpg'}else{this.remove()}">
+  </div>`;
+}
+
+function renderGames(){
+  const query = document.getElementById("search").value.trim().toLowerCase();
+  const filtered = games.filter(g => g[0].toLowerCase().includes(query) || g[2].toLowerCase().includes(query));
+  document.getElementById("resultCount").textContent = `${filtered.length} games`;
+  document.getElementById("gameGrid").innerHTML = filtered.map((g) => {
+    const index = games.indexOf(g);
+    return `<article class="game">
+      ${artworkHTML(g)}
+      <div class="gamebody">
+        <h3>${escapeHTML(g[0])}</h3>
+        <p class="desc">${escapeHTML(g[2])}</p>
+        <div class="price">Rs. ${DEMO_FEE}<small>Demo service fee only — not game price</small></div>
+        <div class="gamebuttons">
+          <button class="btn" onclick="addToCart(${index})">Add to Cart</button>
+          <button class="btn primary" onclick="buyNow(${index})">Buy Now</button>
+        </div>
+      </div>
+    </article>`;
+  }).join("");
+}
+
+function clearSearch(){
+  document.getElementById("search").value = "";
+  renderGames();
+}
+
+function addToCart(index){
+  cart.push(index);
+  updateCartCount();
+  alert(games[index][0] + " added to your cart.");
+}
+
+function buyNow(index){
+  cart.push(index);
+  updateCartCount();
+  openCart();
+}
+
+function updateCartCount(){
+  document.getElementById("cartCount").textContent = cart.length;
+}
+
+function openAccount(){
+  document.getElementById("accountMessage").textContent = customer
+    ? `Signed in as ${customer.name}. Customer ID: ${customer.id}`
+    : "";
+  document.getElementById("customerName").value = customer?.name || "";
+  document.getElementById("customerEmail").value = customer?.email || "";
+  document.getElementById("accountModal").classList.add("show");
+}
+
+function signIn(){
+  const name = document.getElementById("customerName").value.trim();
+  const email = document.getElementById("customerEmail").value.trim();
+  if(!name || !email || !email.includes("@")){
+    alert("Please enter your name and a valid email address.");
+    return;
+  }
+  customer = {
+    name,
+    email,
+    id:"AHGS-" + Math.random().toString(36).slice(2,8).toUpperCase()
+  };
+  localStorage.setItem("ahgs_customer",JSON.stringify(customer));
+  document.getElementById("accountBtn").textContent = "My Account";
+  document.getElementById("accountMessage").textContent = "Demo account created. Your Customer ID is " + customer.id;
+}
+
+function openCart(){
+  drawCart();
+  document.getElementById("cartModal").classList.add("show");
+}
+
+function drawCart(){
+  const container = document.getElementById("cartItems");
+  if(!cart.length){
+    container.innerHTML = '<p class="muted">Your cart is empty. Browse the games and add one to get started.</p>';
+  }else{
+    container.innerHTML = cart.map((idx,pos)=>`
+      <div class="cartrow">
+        <span>${escapeHTML(games[idx][0])}<br><span class="muted">Demo fee: Rs. ${DEMO_FEE}</span></span>
+        <button class="btn" onclick="removeCartItem(${pos})">Remove</button>
+      </div>`).join("");
+  }
+  document.getElementById("cartTotal").textContent = "Rs. " + (cart.length * DEMO_FEE);
+}
+
+function removeCartItem(position){
+  cart.splice(position,1);
+  updateCartCount();
+  drawCart();
+}
+
+function checkout(){
+  if(!cart.length){
+    alert("Your cart is empty.");
+    return;
+  }
+  if(!customer){
+    closeModal("cartModal");
+    openAccount();
+    alert("Please sign in first so your customer ID appears on the bill.");
+    return;
+  }
+  currentOrder = {
+    id:"AH-" + Date.now().toString().slice(-8),
+    customer:{...customer},
+    items:cart.map(i=>games[i]),
+    total:cart.length * DEMO_FEE,
+    date:new Date().toLocaleString()
+  };
+  const rows = currentOrder.items.map((g,i)=>`
+    <tr><td>${i+1}. ${escapeHTML(g[0])}</td><td>Rs. ${DEMO_FEE}</td></tr>`).join("");
+  document.getElementById("bill").innerHTML = `
+    <h2>A.H GAMING STORE</h2>
+    <p>ORDER INVOICE / ENQUIRY</p>
+    <hr>
+    <p><strong>Order ID:</strong> ${currentOrder.id}<br>
+    <strong>Date:</strong> ${escapeHTML(currentOrder.date)}<br>
+    <strong>Customer:</strong> ${escapeHTML(customer.name)}<br>
+    <strong>Customer ID:</strong> ${escapeHTML(customer.id)}<br>
+    <strong>Email:</strong> ${escapeHTML(customer.email)}</p>
+    <table><thead><tr><th>Item</th><th>Demo fee</th></tr></thead>
+    <tbody>${rows}</tbody></table>
+    <h3>Total demo service fee: Rs. ${currentOrder.total}</h3>
+    <p><strong>Important:</strong> This is a demo invoice, not proof of game ownership or purchase. Official game prices, availability and authorized delivery must be confirmed separately. No payment has been taken.</p>`;
+  closeModal("cartModal");
+  document.getElementById("billModal").classList.add("show");
+}
+
+function sendWhatsApp(){
+  if(!currentOrder) return;
+
+  const itemText = currentOrder.items
+    .map((game, index) => `${index + 1}. ${game[0]}`)
+    .join("\n");
+
+  const message =
+`🎮 A.H GAMING STORE — NEW ORDER
+
+Order ID: ${currentOrder.id}
+Customer Name: ${currentOrder.customer.name}
+Customer ID: ${currentOrder.customer.id}
+
+Games Ordered:
+${itemText}
+
+Total: Rs. ${currentOrder.total}
+
+Thank you for choosing A.H Gaming Store!`;
+
+  window.open(
+    "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(message),
+    "_blank"
+  );
+}
+
+function closeModal(id){
+  document.getElementById(id).classList.remove("show");
+}
+
+function outsideClose(event,id){
+  if(event.target.id === id) closeModal(id);
+}
+
+document.getElementById("accountBtn").textContent = customer ? "My Account" : "Sign In";
+renderGames();
+</script>
+</body>
+</html>
